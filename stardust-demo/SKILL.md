@@ -107,6 +107,58 @@ If `/workspace/stardust/state.json` exists and was written for the same URL:
 - If reuse: skip Step 1, go straight to Steps 2–5.
 - If re-run: clear `/workspace/stardust/` and start fresh.
 
+## Step 5b — Commit all artifacts to the EDS repo under `deliverables/`
+
+Before deploying, commit all stardust artifacts to the EDS repo so they are accessible
+from the preview URL and version-controlled alongside the code.
+
+```
+<eds-repo>/deliverables/<slug>/
+├── audit.md                  ← uplift-improvements.md (5 tensions)
+├── what-if-candidates.md     ← uplift-questions.md
+├── direction.md              ← variant directions + rationale
+├── PRODUCT.md                ← brand product description (current state)
+├── DESIGN.md                 ← brand design description (current state)
+├── brand-extraction.json     ← palette, type, motifs, voice
+├── brand-review.html         ← full brand review page
+├── state.json                ← stardust pipeline state
+├── home-A-proposed.html      ← variant A prototype
+├── home-B-proposed.html      ← variant B prototype
+├── home-C-proposed.html      ← variant C static prototype
+├── home-C-cinematic.html     ← variant C cinematic prototype
+├── variant-A.png             ← screenshot of variant A
+├── variant-B.png             ← screenshot of variant B
+└── variant-C.png             ← screenshot of variant C
+```
+
+Copy from the stardust workspace:
+```bash
+mkdir -p <eds-repo>/deliverables/<slug>
+cp /workspace/stardust/uplift-improvements.md <eds-repo>/deliverables/<slug>/audit.md
+cp /workspace/stardust/uplift-questions.md    <eds-repo>/deliverables/<slug>/what-if-candidates.md
+cp /workspace/stardust/direction.md           <eds-repo>/deliverables/<slug>/direction.md
+cp /workspace/stardust/current/PRODUCT.md     <eds-repo>/deliverables/<slug>/PRODUCT.md
+cp /workspace/stardust/current/DESIGN.md      <eds-repo>/deliverables/<slug>/DESIGN.md
+cp /workspace/stardust/current/_brand-extraction.json <eds-repo>/deliverables/<slug>/brand-extraction.json
+cp /workspace/stardust/current/brand-review.html      <eds-repo>/deliverables/<slug>/brand-review.html
+cp /workspace/stardust/state.json             <eds-repo>/deliverables/<slug>/state.json
+cp /workspace/stardust/prototypes/home-A-proposed.html  <eds-repo>/deliverables/<slug>/
+cp /workspace/stardust/prototypes/home-B-proposed.html  <eds-repo>/deliverables/<slug>/
+cp /workspace/stardust/prototypes/home-C-proposed.html  <eds-repo>/deliverables/<slug>/
+cp /workspace/stardust/prototypes/home-C-cinematic.html <eds-repo>/deliverables/<slug>/
+cp /shared/<slug>-variant-A.png <eds-repo>/deliverables/<slug>/variant-A.png
+cp /shared/<slug>-variant-B.png <eds-repo>/deliverables/<slug>/variant-B.png
+cp /shared/<slug>-variant-C.png <eds-repo>/deliverables/<slug>/variant-C.png
+
+cd <eds-repo>
+git add deliverables/
+git commit -m "Add <slug> stardust deliverables — audit, brand review, 3 prototypes, screenshots"
+git push origin <branch>
+```
+
+Deliverables are then accessible at:
+`https://<branch>--<repo>--<org>.aem.page/deliverables/<slug>/brand-review.html`
+
 ## Step 6 — Deploy the chosen variant
 
 Once the user has picked a variant (A, B, or C), invoke `stardust:deploy` to convert the
