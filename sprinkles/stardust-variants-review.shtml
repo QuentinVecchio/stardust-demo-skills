@@ -278,6 +278,26 @@
       border-top: 1px solid var(--hairline-soft);
     }
 
+    /* Deploy button */
+    .deploy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      padding: 7px 13px;
+      border-radius: 7px;
+      border: none;
+      background: var(--amber);
+      color: var(--ink);
+      font: 600 11px/1 var(--mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: inset 0 0 0 1px rgba(201,130,45,0.4);
+      transition: background 0.15s var(--ease);
+    }
+    .deploy-btn:hover { background: var(--amber-light); }
+
     /* Rec pill */
     .recpill {
       position: absolute;
@@ -345,6 +365,7 @@
             <li class="m"><span class="a">→</span> carousel replaced with single hero</li>
             <li class="m"><span class="a">→</span> search field elevated to hero-adjacency</li>
           </ul>
+          <button class="deploy-btn" onclick="event.stopPropagation(); slicc.lick({action: 'deploy', data: {variant: 'A'}})">Deploy →</button>
           <div class="role">static · green-light pick</div>
         </div>
       </div>
@@ -371,6 +392,7 @@
             <li class="m"><span class="a">→</span> featured article as 60/40 editorial bleed</li>
             <li class="m"><span class="a">→</span> photography as primary design voice</li>
           </ul>
+          <button class="deploy-btn" onclick="event.stopPropagation(); slicc.lick({action: 'deploy', data: {variant: 'B'}})">Deploy →</button>
           <div class="role">static · brand exploration</div>
         </div>
       </div>
@@ -396,6 +418,7 @@
             <li class="m"><span class="a">→</span> section titles fade in at reading pace</li>
             <li class="m"><span class="a">→</span> card hover: gentle scale 1.02 at 900ms</li>
           </ul>
+          <button class="deploy-btn" onclick="event.stopPropagation(); slicc.lick({action: 'deploy', data: {variant: 'C'}})">Deploy →</button>
           <div class="role">cinematic · visionary pick</div>
         </div>
       </div>
