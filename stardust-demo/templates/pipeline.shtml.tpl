@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <link rel="icon" href="workflow" />
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>{{SLUG}} · pipeline</title>
+  <title>{{SLUG}} - pipeline</title>
   <style>
     :root {
       --bg: #f5f0e6;
@@ -241,6 +241,11 @@
     </div>
   </div>
 
+  <!-- Baked-in initial state: set by the cone at write time so refreshes don't lose progress -->
+  <script id="initial-state" type="application/json">
+{{INITIAL_STATE_JSON}}
+  </script>
+
   <script>
     var STEPS = [
       { id: 'extract', label: 'Extract', summary: 'Crawl & capture homepage' },
@@ -250,6 +255,10 @@
       { id: 'prototypes', label: 'Prototypes', summary: 'Generate 3 variant prototypes' },
       { id: 'deploy', label: 'Deploy', summary: 'Convert to EDS site' }
     ];
+
+    // State priority: slicc persisted > baked-in > default (all pending)
+    var bakedState = null;
+    try { bakedState = JSON.parse(document.getElementById('initial-state').textContent); } catch(e) {}
 
     var state = {
       steps: STEPS.map(function(s) {
@@ -304,10 +313,13 @@
       document.getElementById('progress-label').textContent = done + ' / ' + total + ' done';
     }
 
-    // Restore persisted state
+    // Restore state: slicc persisted state wins, then baked-in, then defaults
     var saved = slicc.getState();
     if (saved && saved.steps && saved.steps.length === STEPS.length) {
       state = saved;
+    } else if (bakedState && bakedState.steps && bakedState.steps.length === STEPS.length) {
+      state = bakedState;
+      slicc.setState(state);
     }
 
     // Updates from cone

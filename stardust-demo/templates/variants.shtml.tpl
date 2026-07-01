@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <link rel="icon" href="layout-panel-left" />
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>{{SLUG}} · variants</title>
+  <title>{{SLUG}} - variants</title>
   <style>
     :root {
       --ink: #0a1024;
@@ -275,13 +275,18 @@
       box-shadow: inset 0 0 0 1px rgba(201,130,45,0.5);
     }
 
-    /* ── Deploy button ── */
-    .deploy-btn {
+    /* ── Button row ── */
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .open-btn {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      margin-top: 4px;
       padding: 9px 14px;
       border: 1px solid var(--hairline);
       border-radius: 9px;
@@ -292,6 +297,32 @@
       color: var(--fg-dim);
       cursor: pointer;
       transition: all .18s var(--ease);
+      text-decoration: none;
+      box-sizing: border-box;
+      height: 34px;
+    }
+    .open-btn:hover {
+      background: var(--sunken);
+      color: var(--fg);
+    }
+
+    .deploy-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border: 1px solid var(--hairline);
+      border-radius: 9px;
+      background: var(--bg);
+      font: 600 12px/1 var(--mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--fg-dim);
+      cursor: pointer;
+      transition: all .18s var(--ease);
+      box-sizing: border-box;
+      height: 34px;
     }
     .deploy-btn:hover {
       background: var(--amber);
@@ -381,14 +412,17 @@
 
       var html = '<div class="vcard' + (isRec ? ' rec' : '') + '">' +
         (isRec ? '<span class="recpill">★ recommended</span>' : '') +
-        '<div class="thumb" onclick="window.open(\'' + escHtml(v.url) + '\', \'_blank\')"><img src="' + escHtml(v.screenshot) + '" alt="Variant ' + v.key + '" loading="lazy" /></div>' +
+        '<div class="thumb"><img src="' + escHtml(v.screenshot) + '" alt="Variant ' + v.key + '" loading="lazy" /></div>' +
         '<div class="meta">' +
           '<div class="top"><span class="k">' + v.key + '</span><span class="ttl">' + escHtml(v.title) + '</span></div>' +
           '<p class="pitch">' + escHtml(v.pitch) + '</p>' +
           whatifHtml +
           movesHtml +
           '<div class="role">' + escHtml(v.role) + '</div>' +
-          '<button class="' + btnClass + '" data-variant="' + v.key + '">' + btnLabel + '</button>' +
+          '<div class="btn-row">' +
+            '<a class="open-btn" href="' + escHtml(v.url) + '" target="_blank" rel="noopener">open &#8599;</a>' +
+            '<button class="' + btnClass + '" data-variant="' + v.key + '">' + btnLabel + '</button>' +
+          '</div>' +
         '</div>' +
       '</div>';
 

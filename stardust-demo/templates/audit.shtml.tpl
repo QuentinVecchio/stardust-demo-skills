@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AUDIT · {{URL}}</title>
+  <title>AUDIT - {{URL}}</title>
   <link rel="icon" href="triangle-alert" />
   <style>
     html, body { height: 100%; margin: 0; overflow: hidden; }
