@@ -434,7 +434,6 @@ If `/workspace/stardust/state.json` exists for the same URL:
 ## Known Limitations
 
 - **Cherry followers can't open URLs from sprinkles** — iframe sandbox blocks navigation. Workaround: cone posts clickable URLs in chat.
-- **DA API domain restriction** — `admin.da.live` may not be in the domain allowlist. Workaround: use `slicc.fetch` or `playwright-cli fetch` for DA operations.
 - **Sprinkle file size limit** — keep under ~350KB total. Screenshots must use `--max-width 480` to stay small enough for base64 embedding.
 - **Sprinkle overwrite doesn't push to followers** — always mint fresh names, never reuse.
 
