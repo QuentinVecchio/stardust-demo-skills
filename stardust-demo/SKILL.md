@@ -330,71 +330,116 @@ When the cone receives this lick:
 
 **Cherry follower limitation:** Cherry followers cannot open URLs from within sprinkles (iframe sandbox blocks navigation). When a user wants to preview a variant, post the EDS URL as a clickable link in chat instead.
 
-### Step 6 — Deploy (scoop)
+### Step 6 — Deploy
 
-1. Push pipeline status FIRST:
+Deploy is split between the scoop (code conversion) and the cone (DA upload + preview).
+
+| Responsibility | Who |
+|---|---|
+| Convert prototype → EDS blocks + content HTML | Deploy scoop |
+| `git push` code (blocks/styles/scripts) | Deploy scoop |
+| Upload content to DA | Cone (via `mount`) |
+| Trigger preview | Cone (via `admin.hlx.page`) |
+
+#### 6a. Push pipeline status
+
+```
+sprinkle send {{SLUG}}-pipeline '{"step":"deploy","status":"active","summary":"Deploying variant {{VARIANT}} to EDS..."}'
+```
+
+#### 6b. Spawn deploy scoop (code conversion only)
+
+```
+scoop_scoop({
+  name: "{{SLUG}}-deploy",
+  writablePaths: ["/scoops/{{SLUG}}-deploy/", "/shared/", "/workspace/{REPO}/"]
+})
+```
+
+Feed the scoop:
+
+```
+## STEP 1 — MANDATORY
+
+Run: read_file /workspace/skills/stardust/skills/deploy/SKILL.md
+Then follow those instructions EXACTLY.
+
+## Context
+
+- Prototype to deploy: /workspace/stardust/prototypes/home-{{VARIANT}}-proposed.html
+  (if variant C: /workspace/stardust/prototypes/home-C-cinematic.html)
+- EDS repo: /workspace/{REPO}
+- State dir: /shared/stardust-demo/
+
+## IMPORTANT — Scope limit
+
+You are responsible for CODE CONVERSION ONLY:
+- Convert prototype sections → EDS blocks (blocks/<name>/<name>.js + .css)
+- Write content pages as body-fragment HTML (content/index.html, content/nav.html, content/footer.html)
+- Update styles/styles.css with brand tokens
+- Self-host fonts with metric-matched fallbacks
+- Commit and push code to git
+
+DO NOT attempt DA upload. DO NOT call admin.da.live.
+The cone handles DA upload separately via mount.
+
+## Git rules
+
+- NEVER use `git add .` or `git add -A` — only add specific paths
+- One commit + one push at the end
+- Content HTML goes in content/ directory in the repo (for the cone to pick up)
+
+## Naming questions
+
+If this is a multi-page deploy, you MUST ask naming questions.
+Write them to /shared/stardust-demo/deploy-questions.json:
+{"questions": ["question 1", "question 2", ...]}
+Then STOP and wait for answers via feed_scoop.
+
+## Output contract
+
+Write to /shared/stardust-demo/deploy-status.json:
+{"status":"done","summary":"6 blocks built, content ready for DA upload"}
+```
+
+**If deploy asks naming questions:**
+- Read `/shared/stardust-demo/deploy-questions.json`
+- Present questions to the user in chat
+- Feed answers back: `feed_scoop("{{SLUG}}-deploy", "Answers: ...")`
+
+#### 6c. Cone handles DA upload + preview
+
+When the deploy scoop completes (status file written), the cone:
+
+1. **Mount DA:**
+   ```bash
+   mount --source da://{org}/{repo} /mnt/da
    ```
-   sprinkle send {{SLUG}}-pipeline '{"step":"deploy","status":"active","summary":"Deploying variant {{VARIANT}} to EDS..."}'
+
+2. **Upload content:**
+   ```bash
+   cp /workspace/{REPO}/content/index.html /mnt/da/index.html
+   cp /workspace/{REPO}/content/nav.html /mnt/da/nav.html
+   cp /workspace/{REPO}/content/footer.html /mnt/da/footer.html
    ```
 
-2. Spawn deploy scoop:
-   ```
-   scoop_scoop({
-     name: "{{SLUG}}-deploy",
-     writablePaths: ["/scoops/{{SLUG}}-deploy/", "/shared/", "/workspace/{REPO}/"]
-   })
-   ```
-
-3. Feed the scoop:
-   ```
-   ## STEP 1 — MANDATORY
-
-   Run: read_file /workspace/skills/stardust/skills/deploy/SKILL.md
-   Then follow those instructions EXACTLY.
-
-   ## Context
-
-   - Prototype to deploy: /workspace/stardust/prototypes/home-{{VARIANT}}-proposed.html
-     (if variant C: /workspace/stardust/prototypes/home-C-cinematic.html)
-   - EDS repo: /workspace/{REPO}
-   - State dir: /shared/stardust-demo/
-   - Output contract: write status to /shared/stardust-demo/deploy-status.json
-
-   ## DA Auth
-
-   - Get IMS token: DA_TOKEN=$(oauth-token adobe)
-   - Upload content via DA API (PUT admin.da.live/source/...)
-   - Trigger preview: POST admin.hlx.page/preview/{owner}/{repo}/{branch}/{page}
-   - NOTE: If admin.da.live is domain-restricted, use slicc.fetch or
-     playwright-cli fetch as a proxied alternative.
-
-   ## Git rules
-
-   - NEVER use `git add .` or `git add -A`
-   - One commit + one push at the end
-
-   ## Naming questions
-
-   If this is a multi-page deploy, you MUST ask naming questions.
-   Write them to /shared/stardust-demo/deploy-questions.json:
-   {"questions": ["question 1", "question 2", ...]}
-   Then STOP and wait for answers via feed_scoop.
-
-   ## Output contract
-
-   Write to /shared/stardust-demo/deploy-status.json:
-   {"status":"done","preview_url":"https://...","summary":"..."}
+3. **Trigger preview:**
+   ```bash
+   DA_TOKEN=$(oauth-token adobe)
+   curl -X POST -H "Authorization: Bearer $DA_TOKEN" \
+     "https://admin.hlx.page/preview/{org}/{repo}/{branch}/index"
+   curl -X POST -H "Authorization: Bearer $DA_TOKEN" \
+     "https://admin.hlx.page/preview/{org}/{repo}/{branch}/nav"
+   curl -X POST -H "Authorization: Bearer $DA_TOKEN" \
+     "https://admin.hlx.page/preview/{org}/{repo}/{branch}/footer"
    ```
 
-4. **If deploy asks naming questions:**
-   - Read `/shared/stardust-demo/deploy-questions.json`
-   - Present questions to the user in chat
-   - Feed answers back: `feed_scoop("{{SLUG}}-deploy", "Answers: ...")`
-
-5. On completion:
+4. **Push pipeline done:**
    ```
    sprinkle send {{SLUG}}-pipeline '{"step":"deploy","status":"done","summary":"Live at {{PREVIEW_URL}}","link":"{{PREVIEW_URL}}"}'
    ```
+
+**PREVIEW_URL** = `https://{branch}--{repo}--{org}.aem.page/`
 
 ### Step 7 — Report
 
