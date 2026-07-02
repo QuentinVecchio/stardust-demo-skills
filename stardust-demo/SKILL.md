@@ -103,6 +103,13 @@ Feed the scoop:
 Run: read_file /workspace/skills/stardust/skills/uplift/SKILL.md
 Then follow those instructions for URL: {{URL}}
 
+## STEP 2 — Load impeccable
+
+Run: read_file /workspace/skills/impeccable/SKILL.md
+The uplift skill uses impeccable for design quality. You MUST follow
+impeccable's craft loop when generating or evaluating design work.
+If the uplift skill invokes impeccable, follow those instructions.
+
 ## IMPORTANT — SCOPE LIMIT
 
 You are responsible for the FIRST 3 PHASES ONLY:
@@ -167,6 +174,13 @@ Feed the scoop:
 
 Run: read_file /workspace/skills/stardust/skills/uplift/SKILL.md
 Then follow those instructions for URL: {{URL}}
+
+## STEP 2 — Load impeccable
+
+Run: read_file /workspace/skills/impeccable/SKILL.md
+The uplift skill uses impeccable for design quality — especially during
+prototype generation. You MUST follow impeccable's craft loop when
+generating HTML prototypes. This is what makes the output high-quality.
 
 ## IMPORTANT — SCOPE LIMIT
 
@@ -356,6 +370,12 @@ Feed the scoop:
 
 Run: read_file /workspace/skills/stardust/skills/deploy/SKILL.md
 Then follow those instructions EXACTLY.
+
+## STEP 2 — Load impeccable
+
+Run: read_file /workspace/skills/impeccable/SKILL.md
+Use impeccable's craft loop for all HTML/CSS generation — blocks, styles,
+and content pages should meet impeccable's quality bar.
 
 ## Context
 
