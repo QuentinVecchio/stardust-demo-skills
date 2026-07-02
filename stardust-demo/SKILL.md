@@ -248,17 +248,17 @@ Screenshots MUST be from live EDS URLs (NEVER `file://` paths):
 ```bash
 playwright-cli open "$EDS_BASE/variant-A.html"
 sleep 4
-playwright-cli screenshot --fullPage --max-width 960 /shared/{{SLUG}}-variant-A.png
+playwright-cli screenshot --fullPage --max-width 1280 /shared/{{SLUG}}-variant-A.png
 playwright-cli tab-close
 
 playwright-cli open "$EDS_BASE/variant-B.html"
 sleep 4
-playwright-cli screenshot --fullPage --max-width 960 /shared/{{SLUG}}-variant-B.png
+playwright-cli screenshot --fullPage --max-width 1280 /shared/{{SLUG}}-variant-B.png
 playwright-cli tab-close
 
 playwright-cli open "$EDS_BASE/variant-C.html"
 sleep 4
-playwright-cli screenshot --fullPage --max-width 960 /shared/{{SLUG}}-variant-C.png
+playwright-cli screenshot --fullPage --max-width 1280 /shared/{{SLUG}}-variant-C.png
 playwright-cli tab-close
 ```
 
